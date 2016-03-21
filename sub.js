@@ -1,4 +1,15 @@
+var opts = {
+  containerId: "sub",
+  namespace: "sub",
+  interval: 2000,
+  speed: 200,
+  verbose: false,
+  random: false,
+  best: true
+};
+
 var sub = new Sub([
-    "Not yet, really",
-    "Aspiring code writer guy",
-]).run();
+  "Software Engineer",
+  "Not yet, really",
+  "var blog = 'empty'",
+], opts).run();

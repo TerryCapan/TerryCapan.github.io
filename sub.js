@@ -5,7 +5,7 @@ var opts = {
   speed: 200,
   verbose: false,
   random: false,
-  best: true
+  best: false
 };
 
 var sub = new Sub([
@@ -15,10 +15,10 @@ var sub = new Sub([
 ], opts).run();
 
 function sendMail() {
-    var link = "mailto:tcapanjr@gmail.com"
+    var link = "mailto:remote.beta.communications@hackreactor.com"
              + "?cc=tcapanjr@gmail.com"
-             + "&subject= Egg Hit"
-             + "&body= Hit that egg, boiii. eggs"
+             + "&subject= nummy eggy"
+             + "&body= Hit that egg, boiii. eggs."
 
     window.location.href = link;
 }

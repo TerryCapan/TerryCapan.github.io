@@ -27,11 +27,11 @@ var egg = new Egg();
 egg
   .addCode("up,up,left,right,left,right", function() {
     jQuery('#egg').fadeIn(500, function() {
-      window.setTimeout(function() { jQuery('#egg').hide(); }, 1800);
+      window.setTimeout(function() { jQuery('#egg').hide(); }, 200000);
     });
   })
   .addHook(function(){
-    setTimeout(sendMail, 3000);
+    setTimeout(sendMail, 5000);
     console.log("Hook called for: " + this.activeEgg.keys);
     console.log(this.activeEgg.metadata);
   }).listen();

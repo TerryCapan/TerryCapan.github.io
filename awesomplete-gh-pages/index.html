@@ -1,12 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
 
-<meta charset="utf-8" />
+<meta charset="utf-8">
 <title>Awesomplete: Ultra lightweight, highly customizable, simple autocomplete, by Lea Verou</title>
-<link rel="stylesheet" href="prism/prism.css" />
-<link rel="stylesheet" href="awesomplete.css" />
-<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="prism/prism.css">
+<link rel="stylesheet" href="awesomplete.css">
+<link rel="stylesheet" href="style.css">
 
 <script src="awesomplete.js"></script>
 <script src="index.js"></script>
@@ -19,7 +17,7 @@
 
 <a href="#download" class="size"><strong>2KB</strong> minified <span class="amp">&amp;</span> gzipped!</a>
 
-<p>Ultra lightweight, customizable, simple autocomplete widget with zero dependencies, built with modern standards for <abbr title="Verified to work in: IE9 (sorta), IE10+, Chrome, Firefox, Safari 5+, Mobile Safari">modern browsers</abbr>. <a href="http://lea.verou.me/2015/02/awesomplete-2kb-autocomplete-with-zero-dependencies">Because <code>&lt;datalist></code> still doesn’t cut it.</a></p>
+<p>Ultra lightweight, customizable, simple autocomplete widget with zero dependencies, built with modern standards for <abbr title="Verified to work in: IE9 (sorta), IE10+, Chrome, Firefox, Safari 5+, Mobile Safari">modern browsers</abbr>. <a href="http://lea.verou.me/2015/02/awesomplete-2kb-autocomplete-with-zero-dependencies">Because <code>&lt;datalist&gt;</code> still doesn’t cut it.</a></p>
 
 <nav></nav>
 </header>
@@ -28,14 +26,14 @@
 
 <h1>Demo (no JS, minimal options)</h1>
 <label>
-	Pick a programming language:<br />
-	<input autofocus class="awesomplete" data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails" />
+	Pick a programming language:<br>
+	<input autofocus class="awesomplete" data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails">
 </label>
 
 <p>Note that by default you need to type <strong>at least 2 characters</strong> for the popup to show up, though that’s <a href="#customization">super easy to customize</a>. With Awesomplete, making something like this can be as simple as:</p>
 
 <pre class="language-markup"><code>&lt;input class="awesomplete"
-       data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails" /></code></pre>
+       data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails" /&gt;</code></pre>
 
 <pre class="language-javascript"><code>// No extra JS needed for basic usage!</code></pre>
 
@@ -44,72 +42,72 @@
 <section id="basic-usage">
 
 <h1>Basic usage</h1>
-<p>Before you try anything, you need to include <code>awesomplete.css</code> and <code>awesomplete.js</code> in your page, via the usual <code>&lt;link rel="stylesheet" href="awesomplete.css" /></code> and <code>&lt;script src="awesomplete.js" async>&lt;/script></code> tags.</p>
+<p>Before you try anything, you need to include <code>awesomplete.css</code> and <code>awesomplete.js</code> in your page, via the usual <code>&lt;link rel="stylesheet" href="awesomplete.css" /&gt;</code> and <code>&lt;script src="awesomplete.js" async&gt;&lt;/script&gt;</code> tags.</p>
 
-<p>For the autocomplete, you just need an <code>&lt;input></code> text field (might work on <code>&lt;textarea></code> and elements with <code>contentEditable</code>, but that hasn’t been tested). Add <code>class="awesomplete"</code> for it to be <strong>automatically processed</strong> (you can still specify many options via HTML attributes), otherwise you can instantiate with a few lines of JS code, which allow for more customization.</p>
+<p>For the autocomplete, you just need an <code>&lt;input&gt;</code> text field (might work on <code>&lt;textarea&gt;</code> and elements with <code>contentEditable</code>, but that hasn’t been tested). Add <code>class="awesomplete"</code> for it to be <strong>automatically processed</strong> (you can still specify many options via HTML attributes), otherwise you can instantiate with a few lines of JS code, which allow for more customization.</p>
 <p>There are many ways <strong>to link an input to a list of suggestions</strong>. The simple example above could have also been made with the following markup, which provides a nice native fallback in case the script doesn’t load:</p>
 
-<pre class="language-markup"><code>&lt;input class="awesomplete" list="mylist" />
-&lt;datalist id="mylist">
-	&lt;option>Ada&lt;/option>
-	&lt;option>Java&lt;/option>
-	&lt;option>JavaScript&lt;/option>
-	&lt;option>Brainfuck&lt;/option>
-	&lt;option>LOLCODE&lt;/option>
-	&lt;option>Node.js&lt;/option>
-	&lt;option>Ruby on Rails&lt;/option>
-&lt;/datalist></code></pre>
+<pre class="language-markup"><code>&lt;input class="awesomplete" list="mylist" /&gt;
+&lt;datalist id="mylist"&gt;
+	&lt;option&gt;Ada&lt;/option&gt;
+	&lt;option&gt;Java&lt;/option&gt;
+	&lt;option&gt;JavaScript&lt;/option&gt;
+	&lt;option&gt;Brainfuck&lt;/option&gt;
+	&lt;option&gt;LOLCODE&lt;/option&gt;
+	&lt;option&gt;Node.js&lt;/option&gt;
+	&lt;option&gt;Ruby on Rails&lt;/option&gt;
+&lt;/datalist&gt;</code></pre>
 
 <pre class="language-javascript"><code>// None!</code></pre>
 
-<p>Or the following, if you don’t want to use a <code>&lt;datalist></code>, or if you don’t want to use IDs (since any selector will work in <code>data-list</code>):</p>
+<p>Or the following, if you don’t want to use a <code>&lt;datalist&gt;</code>, or if you don’t want to use IDs (since any selector will work in <code>data-list</code>):</p>
 
-<pre class="language-markup"><code>&lt;input class="awesomplete" data-list="#mylist" />
-&lt;ul id="mylist">
-	&lt;li>Ada&lt;/li>
-	&lt;li>Java&lt;/li>
-	&lt;li>JavaScript&lt;/li>
-	&lt;li>Brainfuck&lt;/li>
-	&lt;li>LOLCODE&lt;/li>
-	&lt;li>Node.js&lt;/li>
-	&lt;li>Ruby on Rails&lt;/li>
-&lt;/ul></code></pre>
+<pre class="language-markup"><code>&lt;input class="awesomplete" data-list="#mylist" /&gt;
+&lt;ul id="mylist"&gt;
+	&lt;li&gt;Ada&lt;/li&gt;
+	&lt;li&gt;Java&lt;/li&gt;
+	&lt;li&gt;JavaScript&lt;/li&gt;
+	&lt;li&gt;Brainfuck&lt;/li&gt;
+	&lt;li&gt;LOLCODE&lt;/li&gt;
+	&lt;li&gt;Node.js&lt;/li&gt;
+	&lt;li&gt;Ruby on Rails&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
 
 <pre class="language-javascript"><code>// None!</code></pre>
 
 <p>Or the following, if we want to instantiate in JS:</p>
 
-<pre class="language-markup"><code>&lt;input id="myinput" />
-&lt;ul id="mylist">
-	&lt;li>Ada&lt;/li>
-	&lt;li>Java&lt;/li>
-	&lt;li>JavaScript&lt;/li>
-	&lt;li>Brainfuck&lt;/li>
-	&lt;li>LOLCODE&lt;/li>
-	&lt;li>Node.js&lt;/li>
-	&lt;li>Ruby on Rails&lt;/li>
-&lt;/ul></code></pre>
+<pre class="language-markup"><code>&lt;input id="myinput" /&gt;
+&lt;ul id="mylist"&gt;
+	&lt;li&gt;Ada&lt;/li&gt;
+	&lt;li&gt;Java&lt;/li&gt;
+	&lt;li&gt;JavaScript&lt;/li&gt;
+	&lt;li&gt;Brainfuck&lt;/li&gt;
+	&lt;li&gt;LOLCODE&lt;/li&gt;
+	&lt;li&gt;Node.js&lt;/li&gt;
+	&lt;li&gt;Ruby on Rails&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
 <pre class="language-javascript"><code>var input = document.getElementById("myinput");
 new Awesomplete(input, {list: "#mylist"});</code></pre>
 
 <p>We can use an <strong>element reference</strong> for the list instead of a selector:</p>
 
-<pre class="language-markup"><code>&lt;input id="myinput" />
-&lt;ul id="mylist">
-	&lt;li>Ada&lt;/li>
-	&lt;li>Java&lt;/li>
-	&lt;li>JavaScript&lt;/li>
-	&lt;li>Brainfuck&lt;/li>
-	&lt;li>LOLCODE&lt;/li>
-	&lt;li>Node.js&lt;/li>
-	&lt;li>Ruby on Rails&lt;/li>
-&lt;/ul></code></pre>
+<pre class="language-markup"><code>&lt;input id="myinput" /&gt;
+&lt;ul id="mylist"&gt;
+	&lt;li&gt;Ada&lt;/li&gt;
+	&lt;li&gt;Java&lt;/li&gt;
+	&lt;li&gt;JavaScript&lt;/li&gt;
+	&lt;li&gt;Brainfuck&lt;/li&gt;
+	&lt;li&gt;LOLCODE&lt;/li&gt;
+	&lt;li&gt;Node.js&lt;/li&gt;
+	&lt;li&gt;Ruby on Rails&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
 <pre class="language-javascript"><code>var input = document.getElementById("myinput");
 new Awesomplete(input, {list: document.querySelector("#mylist")});</code></pre>
 
 <p>We can also directly use an <strong>array of strings</strong>:</p>
 
-<pre class="language-markup"><code>&lt;input id="myinput" /></code></pre>
+<pre class="language-markup"><code>&lt;input id="myinput" /&gt;</code></pre>
 	<pre class="language-javascript"><code>var input = document.getElementById("myinput");
 new Awesomplete(input, {
 	list: ["Ada", "Java", "JavaScript", "Brainfuck", "LOLCODE", "Node.js", "Ruby on Rails"]
@@ -117,7 +115,7 @@ new Awesomplete(input, {
 
 <p>We can even set it (or override it) later and it will just work:</p>
 
-<pre class="language-markup"><code>&lt;input id="myinput" /></code></pre>
+<pre class="language-markup"><code>&lt;input id="myinput" /&gt;</code></pre>
 	<pre class="language-javascript"><code>var input = document.getElementById("myinput");
 var awesomplete = new Awesomplete(input);
 
@@ -127,7 +125,7 @@ awesomplete.list = ["Ada", "Java", "JavaScript", "Brainfuck", "LOLCODE", "Node.j
 
 <p>Suggestions with different <strong>label</strong> and <strong>value</strong> are supported too. The label will be shown in autocompleter and the value will be inserted into the input.</p>
 
-<pre class="language-markup"><code>&lt;input id="myinput" /></code></pre>
+<pre class="language-markup"><code>&lt;input id="myinput" /&gt;</code></pre>
 	<pre class="language-javascript"><code>var input = document.getElementById("myinput");
 
 // Show label but insert value into the input:
@@ -153,7 +151,7 @@ new Awesomplete(input, {
 <section id="customization">
 	<h1>Customize</h1>
 
-	<p>All settings discussed in this section are settable via either a <code>data-</code> attribute on the <code>&lt;input></code> element or a JS property on the second argument of the <code>Awesomplete</code> constructor, like so:</p>
+	<p>All settings discussed in this section are settable via either a <code>data-</code> attribute on the <code>&lt;input&gt;</code> element or a JS property on the second argument of the <code>Awesomplete</code> constructor, like so:</p>
 
 	<pre class="language-javascript"><code>new Awesomplete(inputReference, {
 	minChars: 3,
@@ -202,7 +200,7 @@ new Awesomplete(input, {
 			<tr>
 				<td><code>autoFirst</code></td>
 				<td><code>data-autofirst</code></td>
-				<td>Should the first element be automatically selected? Demo: <input class="awesomplete" data-autofirst data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails" xautofocus /></td>
+				<td>Should the first element be automatically selected? Demo: <input class="awesomplete" data-autofirst data-list="Ada, Java, JavaScript, Brainfuck, LOLCODE, Node.js, Ruby on Rails" xautofocus></td>
 				<td>Boolean</td>
 				<td>false</td>
 			</tr>
@@ -245,7 +243,7 @@ new Awesomplete(input, {
 				<td><code>item</code></td>
 				<td>Controls how list items are generated.</td>
 				<td>Function that takes two parameters, the first one being the suggestion text and the second one the user’s input and returns a list item.</td>
-				<td>Generates list items with the user’s input highlighted via <code>&lt;mark></code>.</td>
+				<td>Generates list items with the user’s input highlighted via <code>&lt;mark&gt;</code>.</td>
 			</tr>
 			<tr>
 				<td><code>replace</code></td>
@@ -272,7 +270,7 @@ To <strong>use objects without <code>label</code> or <code>value</code> properti
 You can <strong>use any object for <code>label</code> and <code>value</code></strong> and it will be converted to String where necessary:
 <pre class="language-javascript"><code>list: [ new Date("2015-01-01"), ... ] </code></pre>
 Original list items as Date objects will be accessible in <code>filter</code>, <code>sort</code>, <code>item</code> and <code>replace</code> functions, but by default we'll just see Date objects converted to strings in autocompleter and the same value will be inserted to the input.
-<br />
+<br>
 We can also <strong>generate list items based on user's input</strong>. See E-mail autocomplete example in <a href="#advanced-examples">Advanced Examples</a> section.
 				</td>
 				<td><code class="language-javascript">Awesomplete.DATA</code>: Identity function which just returns the original list item.</td>
@@ -376,7 +374,7 @@ We can also <strong>generate list items based on user's input</strong>. See E-ma
 	<section id="email">
 	<h2>E-mail autocomplete</h2>
 	<label>Type an email: <input type="email"></label>
-	<pre class="language-markup"><code>&lt;input type="email" /></code></pre>
+	<pre class="language-markup"><code>&lt;input type="email" /&gt;</code></pre>
 	<pre class="language-javascript"><code><script>new Awesomplete($('input[type="email"]'), {
 	list: ["aol.com", "att.net", "comcast.net", "facebook.com", "gmail.com", "gmx.com", "googlemail.com", "google.com", "hotmail.com", "hotmail.co.uk", "mac.com", "me.com", "mail.com", "msn.com", "live.com", "sbcglobal.net", "verizon.net", "yahoo.com", "yahoo.co.uk"],
 	data: function (text, input) {
@@ -388,8 +386,8 @@ We can also <strong>generate list items based on user's input</strong>. See E-ma
 
 	<section id="multiple-values">
 	<h2>Multiple values</h2>
-	<label>Tags (comma separated): <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" data-multiple data-minchars="1" /></label>
-	<pre class="language-markup"><code>&lt;input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" data-multiple /></code></pre>
+	<label>Tags (comma separated): <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" data-multiple data-minchars="1"></label>
+	<pre class="language-markup"><code>&lt;input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" data-multiple /&gt;</code></pre>
 	<pre class="language-javascript"><code><script>new Awesomplete($('input[data-multiple]'), {
 	filter: function(text, input) {
 		return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
@@ -416,8 +414,8 @@ ajax.send();</script></code></pre>
 
 	<section id="combobox">
 	<h2>Combobox dropdown</h2>
-	<label>Type or click dropdown: <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" class="dropdown-input" /><button class="dropdown-btn" type="button"><span class="caret"></span></button></label>
-	<pre class="language-markup"><code>&lt;input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" class="dropdown-input" /></code></pre>
+	<label>Type or click dropdown: <input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" class="dropdown-input"><button class="dropdown-btn" type="button"><span class="caret"></span></button></label>
+	<pre class="language-markup"><code>&lt;input data-list="CSS, JavaScript, HTML, SVG, ARIA, MathML" class="dropdown-input" /&gt;</code></pre>
 	<pre class="language-javascript"><code><script>var comboplete = new Awesomplete(Awesomplete.$('input.dropdown-input'), {
 	minChars: 0,
 });
@@ -449,13 +447,13 @@ Awesomplete.$('.dropdown-btn').addEventListener("click", function() {
 	<p><strong>Pull requests are very welcome</strong>, as long as you maintain the code style and ask before adding tons of LOCs to the codebase!</p>
 </section>
 
-<footer>Made with &hearts; by <a href="http://lea.verou.me">Lea Verou</a> &bull; <a href="http://lea.verou.me/2015/02/awesomplete-2kb-autocomplete-with-zero-dependencies">Read the blog post</a> &bull; <a href="http://shop.oreilly.com/product/0636920031123.do">Buy my book!</a> </footer>
+<footer>Made with ♥ by <a href="http://lea.verou.me">Lea Verou</a> • <a href="http://lea.verou.me/2015/02/awesomplete-2kb-autocomplete-with-zero-dependencies">Read the blog post</a> • <a href="http://shop.oreilly.com/product/0636920031123.do">Buy my book!</a> </footer>
 
 
 <script src="prism/prism.js" defer></script>
 
 <a href="https://twitter.com/share" class="twitter-share-button" data-via="LeaVerou" data-size="large">Tweet</a>
-<script async src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=leaveroume" id="_carbonads_js"></script>
+<script async src="//cdn.carbonads.com/carbon.js?zoneid=1673&amp;serve=C6AILKT&amp;placement=leaveroume" id="_carbonads_js"></script>
 
 <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 <script>
@@ -468,5 +466,4 @@ Awesomplete.$('.dropdown-btn').addEventListener("click", function() {
   ga('send', 'pageview');
 
 </script>
-</body>
-</html>
+</section></body>

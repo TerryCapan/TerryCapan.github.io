@@ -1,0 +1,219 @@
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <title>The Debugger's Question</title>
+    <meta name="description" content="">
+
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=281bc49530">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic%7COpen+Sans:700,400">
+
+    <link rel="canonical" href="index.html">
+    <meta name="referrer" content="origin">
+    
+    <meta property="og:site_name" content="Terry Capan">
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="The Debugger's Question">
+    <meta property="og:description" content="When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea...">
+    <meta property="og:url" content="http://localhost:2368/the-debuggers-question/">
+    <meta property="article:published_time" content="2016-04-19T05:27:28.462Z">
+    <meta property="article:modified_time" content="2016-04-19T05:27:28.460Z">
+    
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="The Debugger's Question">
+    <meta name="twitter:description" content="When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea...">
+    <meta name="twitter:url" content="http://localhost:2368/the-debuggers-question/">
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Terry Capan",
+    "author": {
+        "@type": "Person",
+        "name": "Terry Capan",
+        "url": "http://localhost:2368/author/terry",
+        "sameAs": null,
+        "description": null
+    },
+    "headline": "The Debugger&#x27;s Question",
+    "url": "http://localhost:2368/the-debuggers-question/",
+    "datePublished": "2016-04-19T05:27:28.462Z",
+    "dateModified": "2016-04-19T05:27:28.460Z",
+    "description": "When code isn&#x27;t giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.7">
+    <link rel="alternate" type="application/rss+xml" title="Terry Capan" href="../rss/index.html">
+</head>
+<body class="post-template nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../">Home</a></li>
+    </ul>
+    <a class="subscribe-button icon-feed" href="../rss/index.rss">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">The Debugger's Question</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-04-19">19 April 2016</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many times before, especially with very simple code that likely doesn't resemble real world applications. It becomes a problem when 20 minutes have been wasted guessing and you're no closer to figuring out the problem than when you first noticed it. Enter, the debugger's question.</p>
+
+<p>The debugger's question typically goes something like, "What justified my expectation that <code>blank</code> would do <code>blank</code>." </p>
+
+<p>When you find a bug, you should ask yourself this question and work backwards through your code, step by step, making no assumptions.</p>
+
+<p>Let's walk through a simple code challenge to see how this might work in practice.</p>
+
+<blockquote>
+  <p>Write a function that, given a string, will return the longest word in the string. If two or more words are tied for the longest word, return the first.</p>
+</blockquote>
+
+<p>Here's a first attempt:  </p>
+
+<pre><code>var longestWord = function(string) {  
+  var array = string.split(' ');
+  var longest;
+  array.forEach(function(e, i, a) {
+    if ( e.length &gt; longest.length ) {
+      longest = e;
+    }
+  });
+  return longest;
+};
+</code></pre>
+
+<p>When passed a sentence, this returns: <code>TypeError: Cannot read property 'length' of undefined</code> and points us to <code>longest.length</code>.</p>
+
+<p>Since we are unsure about at what point in the running of our function that this error occurred, it would be wise to see what the value of longest is right before this error occurs. So we'll add <code>console.log(longest);</code> just before our if statement:</p>
+
+<pre><code>var longestWord = function(string) {  
+  var array = string.split(' ');
+  var longest;
+  array.forEach(function(e, i, a) {
+    console.log(longest);
+    if ( e.length &gt; longest.length ) {
+      longest = e;
+    }
+  });
+  return longest;
+};
+</code></pre>
+
+<p>This returns the same error as above, however, prior to the error, only one value is logged to our console: <code>undefined</code>. This should tell us that during the initial loop of our forEach loop, the value of <code>longest</code> is undefined, hence our error message. </p>
+
+<p>Now let's ask ourselves the debugger's question. What justified our expectation that <code>longest</code> would have a length? This question should take us to whatever the previous step was that involved our variable <code>longest</code>. That happens to be where we initially declared <code>var longest;</code>. Now it should be clear that longest was undefined because we didn't assign it any value when we declared it. </p>
+
+<p>Let's try one more time:</p>
+
+<pre><code>var longestWord = function(string) {  
+  var array = string.split(' ');
+  var longest = '';
+  array.forEach(function(e, i, a) {
+    if ( e.length &gt; longest.length ) {
+      longest = e;
+    }
+  });
+  return longest;
+};
+</code></pre>
+
+<p>All that we've changed this time is making <code>longest</code> equal to an empty string when it is declared. This fixes our error and allows our function to run properly.</p>
+
+<p>As you can see, this is a very simple example and serves only to demonstrate how to use the debugger's question. Someone with a little knowledge would likely have spotted the problem right away without needing to go through the code step by step. However, when a code challenge or a real world code problem gets more complex, using this strategy will be a useful habit to have. Used properly, the debugger's question can save a developer valuable time when trying to find a bug in their code. </p>
+
+<p>Next time your code isn't doing what you expect, ask yourself the debugger's question and move backward one step at a time, asking the same question again and again until you find where your bug started.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/terry/">Terry Capan</a></h4>
+
+                    <p>Read <a href="../author/terry/">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=The%20Debugger's%20Question&amp;url=http://localhost:2368/the-debuggers-question/" onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/the-debuggers-question/" onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/the-debuggers-question/" onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story prev no-cover" href="../how-a-server-should-respond-to-get-post-and-options-requests/">
+        <section class="post">
+            <h2>How a server should respond to 'GET', 'POST', and 'OPTIONS' requests.</h2>
+            <p>If you are reading this, hopefully you know how to or have already set up a basic ("Hello, World"…</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../">Terry Capan</a> © 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=281bc49530"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=281bc49530"></script>
+
+</body>

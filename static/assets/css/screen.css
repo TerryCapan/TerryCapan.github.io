@@ -871,7 +871,7 @@ body.nav-opened .nav {
     letter-spacing: -1px;
     font-weight: 700;
     font-family: "Open Sans", sans-serif;
-    color: #fff;
+    color: #339042;
 }
 
 .page-description {
@@ -881,7 +881,7 @@ body.nav-opened .nav {
     font-weight: 400;
     font-family: "Merriweather", serif;
     letter-spacing: 0.01rem;
-    color: rgba(255,255,255,0.8);
+    color: #05DE4B;
 }
 
 .no-cover.main-header {

@@ -1,5 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Terry Capan]]></title><description><![CDATA[Software Engineer Guy]]></description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Mon, 28 Mar 2016 07:23:20 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[How a server should respond to 'GET', 'POST', and 'OPTIONS' requests.]]></title><description><![CDATA[<p>If you are reading this, hopefully you know how to or have already set up a basic ("Hello, World") http server.</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Terry Capan]]></title><description><![CDATA[Software Engineer Guy]]></description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Tue, 19 Apr 2016 05:48:30 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[The Debugger's Question]]></title><description><![CDATA[<p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many</p>]]></description><link>http://localhost:2368/the-debuggers-question/</link><guid isPermaLink="false">f3b42206-3122-4dcd-acfc-d2b05541cb76</guid><dc:creator><![CDATA[Terry Capan]]></dc:creator><pubDate>Tue, 19 Apr 2016 05:27:28 GMT</pubDate><content:encoded><![CDATA[<p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many times before, especially with very simple code that likely doesn't resemble real world applications. It becomes a problem when 20 minutes have been wasted guessing and you're no closer to figuring out the problem than when you first noticed it. Enter, the debugger's question.</p>
+
+<p>The debugger's question typically goes something like, "What justified my expectation that <code>blank</code> would do <code>blank</code>." </p>
+
+<p>When you find a bug, you should ask yourself this question and work backwards through your code, step by step, making no assumptions.</p>
+
+<p>Let's walk through a simple code challenge to see how this might work in practice.</p>
+
+<blockquote>
+  <p>Write a function that, given a string, will return the longest word in the string. If two or more words are tied for the longest word, return the first.</p>
+</blockquote>
+
+<p>Here's a first attempt:  </p>
+
+<pre><code>var longestWord = function(string) {  
+  var array = string.split(' ');
+  var longest;
+  array.forEach(function(e, i, a) {
+    if ( e.length &gt; longest.length ) {
+      longest = e;
+    }
+  });
+  return longest;
+};
+</code></pre>
+
+<p>When passed a sentence, this returns: <code>TypeError: Cannot read property 'length' of undefined</code> and points us to <code>longest.length</code>.</p>
+
+<p>Since we are unsure about at what point in the running of our function that this error occurred, it would be wise to see what the value of longest is right before this error occurs. So we'll add <code>console.log(longest);</code> just before our if statement:</p>
+
+<pre><code>var longestWord = function(string) {  
+  var array = string.split(' ');
+  var longest;
+  array.forEach(function(e, i, a) {
+    console.log(longest);
+    if ( e.length &gt; longest.length ) {
+      longest = e;
+    }
+  });
+  return longest;
+};
+</code></pre>
+
+<p>This returns the same error as above, however, prior to the error, only one value is logged to our console: <code>undefined</code>. This should tell us that during the initial loop of our forEach loop, the value of <code>longest</code> is undefined, hence our error message. </p>
+
+<p>Now let's ask ourselves the debugger's question. What justified our expectation that <code>longest</code> would have a length? This question should take us to whatever the previous step was that involved our variable <code>longest</code>. That happens to be where we initially declared <code>var longest;</code>. Now it should be clear that longest was undefined because we didn't assign it any value when we declared it. </p>
+
+<p>Let's try one more time:</p>
+
+<pre><code>var longestWord = function(string) {  
+  var array = string.split(' ');
+  var longest = '';
+  array.forEach(function(e, i, a) {
+    if ( e.length &gt; longest.length ) {
+      longest = e;
+    }
+  });
+  return longest;
+};
+</code></pre>
+
+<p>All that we've changed this time is making <code>longest</code> equal to an empty string when it is declared. This fixes our error and allows our function to run properly.</p>
+
+<p>As you can see, this is a very simple example and serves only to demonstrate how to use the debugger's question. Someone with a little knowledge would likely have spotted the problem right away without needing to go through the code step by step. However, when a code challenge or a real world code problem gets more complex, using this strategy will be a useful habit to have. Used properly, the debugger's question can save a developer valuable time when trying to find a bug in their code. </p>
+
+<p>Next time your code isn't doing what you expect, ask yourself the debugger's question and move backward one step at a time, asking the same question again and again until you find where your bug started.</p>]]></content:encoded></item><item><title><![CDATA[How a server should respond to 'GET', 'POST', and 'OPTIONS' requests.]]></title><description><![CDATA[<p>If you are reading this, hopefully you know how to or have already set up a basic ("Hello, World") http server.</p>
 
 <p>If not, it might look something like this:</p>
 

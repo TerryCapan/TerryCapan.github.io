@@ -1,9 +1,177 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Terry Capan]]></title><description><![CDATA[Software Engineer Guy]]></description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Wed, 04 May 2016 04:46:16 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Simple ES6 Features You Should Already Be Using]]></title><description><![CDATA[<p>Caution: ES6 isn't yet supported by all browsers and will require the use of a compiler such as <a href="http://babeljs.io/">babel</a>.</p>
+<rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0" xmlns:media="http://search.yahoo.com/mrss/"><channel><title><![CDATA[Terry Capan]]></title><description><![CDATA[Software Engineer Guy]]></description><link>http://localhost:2368/</link><generator>Ghost 0.7</generator><lastBuildDate>Wed, 11 May 2016 05:29:48 GMT</lastBuildDate><atom:link href="http://localhost:2368/rss/" rel="self" type="application/rss+xml"/><ttl>60</ttl><item><title><![CDATA[Implementing a Simple Redux Store]]></title><description><![CDATA[<p>In this post, I'm going to demonstrate how to create a simple redux store within a React app. We will go over the basics of how to make an API call that will return some data, how to make sure that data flows to your redux store, and how to</p>]]></description><link>http://localhost:2368/implementing-a-simple-redux-store/</link><guid isPermaLink="false">ce5d7344-a579-49e9-97e9-ce2c8d031e5d</guid><dc:creator><![CDATA[Terry Capan]]></dc:creator><pubDate>Wed, 11 May 2016 05:29:26 GMT</pubDate><content:encoded><![CDATA[<p>In this post, I'm going to demonstrate how to create a simple redux store within a React app. We will go over the basics of how to make an API call that will return some data, how to make sure that data flows to your redux store, and how to make it available inside your components/containers. </p>
+
+<p>Here is what our file structure will look like:  </p>
+
+<pre><code>|-- src
+    |-- actions
+        |-- actionCreators.js 
+    |-- components
+        |-- app.js
+    |-- containers
+        |-- pictureDisplay.js
+    |-- reducers
+        |-- index.js
+        |-- reducerPictures.js
+    |-- index.js
+</code></pre>
+
+<p>This structure may seem like overkill for what will be a very simple app, however, it's important to always keep your code modular. This will make your code scalable and much easier to reason through.</p>
+
+<p>We will pass our <code>pictureDisplay.js</code> container to our main component: <code>app.js</code>. This way, if in the future we have more components/containers, we can place them inside the app component, should we so desire.  </p>
+
+<pre><code>components/app.js...  
+
+import React, { Component } from 'react';  
+import PictureDisplay from '../containers/pictureDisplay';
+
+
+export default class App extends Component {  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;PictureDisplay /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre>
+
+<p><code>Index.js</code> is where we will create our redux store and render our main app component to the DOM.</p>
+
+<pre><code>index.js...  
+
+import React from 'react';  
+import ReactDOM from 'react-dom';  
+import { Provider } from 'react-redux';  
+import { createStore, applyMiddleware } from 'redux';  
+import ReduxPromise from 'redux-promise';
+
+import App from './components/app';  
+import rootReducer from './reducers';
+
+const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
+
+ReactDOM.render(  
+  &lt;Provider store={createStoreWithMiddleware(rootReducer)}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+  , document.getElementById('root'));
+</code></pre>
+
+<p>A lot is happening above so let's list some things out:</p>
+
+<ul>
+<li>Create a redux store  </li>
+<li>Apply ReduxPromise middleware which will enable our store/reducers to handle asynchronous API calls  </li>
+<li>Pass our store to the Provider and render it to a specified DOM element with our <code>App</code> component</li>
+</ul>
+
+<p>Our <code>pictureDisplay</code> container is where we'll interact with our users a little more.</p>
+
+<pre><code>pictureDisplay.js...  
+
+import React, { Component } from 'react';  
+import { connect } from 'react-redux';  
+import { bindActionCreators } from 'redux';  
+import { fetchPictures } from '../actions/actionCreators';
+
+class PictureDisplay extends Component {  
+  componentWillMount() {
+    this.props.fetchPictures();
+  }
+
+  renderPictures(pictureData) {
+    const name = pictureData.picture.name;
+    const description = pictureData.picture.description;
+    const url = pictureData.picture.url;
+
+    return (
+      &lt;tr key={name}
+        &lt;td&gt;&lt;img src={url}&gt;&lt;/td&gt;
+        &lt;td&gt;{description}&lt;/td&gt;
+      &lt;/tr&gt;
+    );
+  }
+
+  render() {
+    return (
+      &lt;table&gt;
+        {this.props.pictures.map(this.renderPictures)}
+      &lt;/table&gt;
+    );
+  }
+}
+
+function mapStateToProps({ pictures }) {  
+  return { pictures };
+}
+
+function mapDispatchToProps(dispatch) {  
+  return bindActionCreators({ fetchPictures }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PictureDisplay);
+</code></pre>
+
+<p>Once again, let's go over what is happening above. Just before this container is rendered, componentWillMount will be executed. This calls our action creator, <code>fetchPictures</code>. For now just assume it is getting us some random pictures that we want to display. Through our action creator, reducers, and store (all to be explained in depth soon), these pictures are now available in our state. If you look near the bottom of this file, you'll see two functions before we export everything. <code>mapStatetoProps</code> is responsible for making the state/store available to our container. In this case, we are making <code>pictures</code> available. <code>mapDispatchToProps</code> is allowing us to easily dispatch our actions from a component or container that doesn't have direct access to our redux store. We will get deeper into the flow of data once we have gone through the action creators and reducers.</p>
+
+<pre><code>actionCreators.js...  
+
+import axios from 'axios';  
+  // axios is a library that will make our API call
+const url = 'www.getrandompictures.com';
+
+export const FETCH_PICTURES = 'FETCH_PICTURES';
+
+export function fetchPictures() {  
+  const request = axios.get(url);
+  return {
+    type: FETCH_PICTURES,
+    payload: request,
+  };
+}
+</code></pre>
+
+<p>When <code>fetchPictures</code> is called in our <code>PictureDisplay</code> container, it makes a GET request to the url above. When that request comes back with the pictures, it goes to our reducer (below).</p>
+
+<pre><code>reducerPictures.js...  
+
+import { FETCH_PICTURES } from '../actions/actionCreators';
+
+export default function(state = [], action) {  
+  switch (action.type) {
+    case FETCH_PICTURES:
+      return [action.payload.data, ...state];
+  }
+  default:
+    return state;
+}
+</code></pre>
+
+<p>Because we passed it the type of <code>FETCH_PICTURES</code> when we created it, it will be added to the current state through the reducer with the case of <code>FETCH_PICTURES</code>. If the action type was anything other than <code>FETCH_PICTURES</code>, we would return the state as-is, through the default case.  </p>
+
+<pre><code>reducers/index.js...  
+
+import { combineReducers } from 'redux';  
+import PictureReducer from './reducerPictures';
+
+const rootReducer = combineReducers({  
+  pictures: PictureReducer,
+});
+
+export default rootReducer;
+</code></pre>
+
+<p>The above is where, if we had more than one reducer, we would combine them to then pass to our redux store. In this simple example, we are 'combining' just the one reducer to pass to the store.</p>
+
+<h6 id="summary">Summary</h6>
+
+<p>Let's run through the data flow. Our <code>PictureDisplay</code> container calls our <code>fetchPictures</code> action creator. <code>fetchPictures</code> creates an action, <code>FETCH_PICTURES</code>, and makes an API call to GET some random pictures. We are able to make this asynchronous request and process the returned pictures with our ReduxPromise middleware. The returned promise with our picture data is added to the state/redux store in <code>reducerPictures.js</code>. Once added to our store, it is automatically received by our <code>PictureDisplay</code> container through the <code>mapStateToProps</code> function. Once it is received by our container, our other functionality will display the pictures and data to the page.</p>]]></content:encoded></item><item><title><![CDATA[Simple ES6 Features You Should Already Be Using]]></title><description><![CDATA[<p>Caution: ES6 isn't yet supported by all browsers and will require the use of a compiler, such as <a href="http://babeljs.io/">babel</a>.</p>
 
 <h3 id="modulesimportsexports">Modules: imports/exports</h3>
 
-<p>Writing clean/modular javascript is a must if you ever hope to write code professionally, with any other humans, or even just with your future self. To do</p>]]></description><link>http://localhost:2368/the-simplest-dynamic-chart-youll-ever-code/</link><guid isPermaLink="false">fd418f84-9fce-4808-b054-bef07e1670ec</guid><dc:creator><![CDATA[Terry Capan]]></dc:creator><pubDate>Wed, 04 May 2016 04:40:28 GMT</pubDate><content:encoded><![CDATA[<p>Caution: ES6 isn't yet supported by all browsers and will require the use of a compiler such as <a href="http://babeljs.io/">babel</a>.</p>
+<p>Writing clean/modular javascript is a must if you ever hope to write code professionally, with any other humans, or even just with your future self. To do</p>]]></description><link>http://localhost:2368/the-simplest-dynamic-chart-youll-ever-code/</link><guid isPermaLink="false">fd418f84-9fce-4808-b054-bef07e1670ec</guid><dc:creator><![CDATA[Terry Capan]]></dc:creator><pubDate>Wed, 04 May 2016 04:40:28 GMT</pubDate><content:encoded><![CDATA[<p>Caution: ES6 isn't yet supported by all browsers and will require the use of a compiler, such as <a href="http://babeljs.io/">babel</a>.</p>
 
 <h3 id="modulesimportsexports">Modules: imports/exports</h3>
 
@@ -99,7 +267,9 @@ If you aren't passing any parameters: <br>
 <code>() =&gt; { //code here };</code>
 <br> <br>
 Instead of: <br>
-<code>array.forEach(function(element, index, array) { //code here };</code></p>]]></content:encoded></item><item><title><![CDATA[The Debugger's Question]]></title><description><![CDATA[<p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many</p>]]></description><link>http://localhost:2368/the-debuggers-question/</link><guid isPermaLink="false">f3b42206-3122-4dcd-acfc-d2b05541cb76</guid><dc:creator><![CDATA[Terry Capan]]></dc:creator><pubDate>Tue, 19 Apr 2016 05:27:28 GMT</pubDate><content:encoded><![CDATA[<p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many times before, especially with very simple code that likely doesn't resemble real world applications. It becomes a problem when 20 minutes have been wasted guessing and you're no closer to figuring out the problem than when you first noticed it. Enter, the debugger's question.</p>
+<code>array.forEach(function(element, index, array) { //code here };</code></p>
+
+<p>Arrow functions are always anonymous and lexically bind the <code>this</code> keyword, meaning that <code>this</code> is equal to the value of the enclosing execution context's <code>this</code> and will continue to refer to that context no matter how or when they are invoked.</p>]]></content:encoded></item><item><title><![CDATA[The Debugger's Question]]></title><description><![CDATA[<p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many</p>]]></description><link>http://localhost:2368/the-debuggers-question/</link><guid isPermaLink="false">f3b42206-3122-4dcd-acfc-d2b05541cb76</guid><dc:creator><![CDATA[Terry Capan]]></dc:creator><pubDate>Tue, 19 Apr 2016 05:27:28 GMT</pubDate><content:encoded><![CDATA[<p>When code isn't giving the anticipated results, a mistake that many developers will make is to stare at their code, look for obvious mistakes and make guesses at what might be causing the problem. This seems like a good idea for a couple minutes because this strategy has worked many times before, especially with very simple code that likely doesn't resemble real world applications. It becomes a problem when 20 minutes have been wasted guessing and you're no closer to figuring out the problem than when you first noticed it. Enter, the debugger's question.</p>
 
 <p>The debugger's question typically goes something like, "What justified my expectation that <code>blank</code> would do <code>blank</code>." </p>
 

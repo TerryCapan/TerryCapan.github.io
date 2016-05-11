@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <title>Implementing a Simple Redux Store</title>
+    <meta name="description" content="" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="../favicon.ico">
+
+    <link rel="stylesheet" type="text/css" href="../assets/css/screen.css?v=e1bd0d9014" />
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+    <link rel="canonical" href="index.html" />
+    <meta name="referrer" content="origin" />
+    
+    <meta property="og:site_name" content="Terry Capan" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Implementing a Simple Redux Store" />
+    <meta property="og:description" content="In this post, I&#x27;m going to demonstrate how to create a simple redux store within a React app. We will go over the basics of how to make an API call that will return some data, how to make sure..." />
+    <meta property="og:url" content="http://localhost:2368/implementing-a-simple-redux-store/" />
+    <meta property="article:published_time" content="2016-05-11T05:29:26.616Z" />
+    <meta property="article:modified_time" content="2016-05-11T05:29:26.615Z" />
+    
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Implementing a Simple Redux Store" />
+    <meta name="twitter:description" content="In this post, I&#x27;m going to demonstrate how to create a simple redux store within a React app. We will go over the basics of how to make an API call that will return some data, how to make sure..." />
+    <meta name="twitter:url" content="http://localhost:2368/implementing-a-simple-redux-store/" />
+    
+    <script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "publisher": "Terry Capan",
+    "author": {
+        "@type": "Person",
+        "name": "Terry Capan",
+        "url": "http://localhost:2368/author/terry",
+        "sameAs": null,
+        "description": null
+    },
+    "headline": "Implementing a Simple Redux Store",
+    "url": "http://localhost:2368/implementing-a-simple-redux-store/",
+    "datePublished": "2016-05-11T05:29:26.616Z",
+    "dateModified": "2016-05-11T05:29:26.615Z",
+    "description": "In this post, I&#x27;m going to demonstrate how to create a simple redux store within a React app. We will go over the basics of how to make an API call that will return some data, how to make sure..."
+}
+    </script>
+
+    <meta name="generator" content="Ghost 0.7" />
+    <link rel="alternate" type="application/rss+xml" title="Terry Capan" href="../rss/index.html" />
+</head>
+<body class="post-template nav-closed">
+
+    <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="index.html#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+            <li class="nav-home" role="presentation"><a href="../index.html">Home</a></li>
+    </ul>
+    <a class="subscribe-button icon-feed" href="../rss/index.html">Subscribe</a>
+</div>
+<span class="nav-cover"></span>
+
+
+    <div class="site-wrapper">
+
+        
+
+
+<header class="main-header post-head no-cover">
+    <nav class="main-nav  clearfix">
+        
+            <a class="menu-button icon-menu" href="index.html#"><span class="word">Menu</span></a>
+    </nav>
+</header>
+
+<main class="content" role="main">
+    <article class="post">
+
+        <header class="post-header">
+            <h1 class="post-title">Implementing a Simple Redux Store</h1>
+            <section class="post-meta">
+                <time class="post-date" datetime="2016-05-11">11 May 2016</time> 
+            </section>
+        </header>
+
+        <section class="post-content">
+            <p>In this post, I'm going to demonstrate how to create a simple redux store within a React app. We will go over the basics of how to make an API call that will return some data, how to make sure that data flows to your redux store, and how to make it available inside your components/containers. </p>
+
+<p>Here is what our file structure will look like:  </p>
+
+<pre><code>|-- src
+    |-- actions
+        |-- actionCreators.js 
+    |-- components
+        |-- app.js
+    |-- containers
+        |-- pictureDisplay.js
+    |-- reducers
+        |-- index.js
+        |-- reducerPictures.js
+    |-- index.js
+</code></pre>
+
+<p>This structure may seem like overkill for what will be a very simple app, however, it's important to always keep your code modular. This will make your code scalable and much easier to reason through.</p>
+
+<p>We will pass our <code>pictureDisplay.js</code> container to our main component: <code>app.js</code>. This way, if in the future we have more components/containers, we can place them inside the app component, should we so desire.  </p>
+
+<pre><code>components/app.js...  
+
+import React, { Component } from 'react';  
+import PictureDisplay from '../containers/pictureDisplay';
+
+
+export default class App extends Component {  
+  render() {
+    return (
+      &lt;div&gt;
+        &lt;PictureDisplay /&gt;
+      &lt;/div&gt;
+    );
+  }
+}
+</code></pre>
+
+<p><code>Index.js</code> is where we will create our redux store and render our main app component to the DOM.</p>
+
+<pre><code>index.js...  
+
+import React from 'react';  
+import ReactDOM from 'react-dom';  
+import { Provider } from 'react-redux';  
+import { createStore, applyMiddleware } from 'redux';  
+import ReduxPromise from 'redux-promise';
+
+import App from './components/app';  
+import rootReducer from './reducers';
+
+const createStoreWithMiddleware = applyMiddleware(ReduxPromise)(createStore);
+
+ReactDOM.render(  
+  &lt;Provider store={createStoreWithMiddleware(rootReducer)}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;
+  , document.getElementById('root'));
+</code></pre>
+
+<p>A lot is happening above so let's list some things out:</p>
+
+<ul>
+<li>Create a redux store  </li>
+<li>Apply ReduxPromise middleware which will enable our store/reducers to handle asynchronous API calls  </li>
+<li>Pass our store to the Provider and render it to a specified DOM element with our <code>App</code> component</li>
+</ul>
+
+<p>Our <code>pictureDisplay</code> container is where we'll interact with our users a little more.</p>
+
+<pre><code>pictureDisplay.js...  
+
+import React, { Component } from 'react';  
+import { connect } from 'react-redux';  
+import { bindActionCreators } from 'redux';  
+import { fetchPictures } from '../actions/actionCreators';
+
+class PictureDisplay extends Component {  
+  componentWillMount() {
+    this.props.fetchPictures();
+  }
+
+  renderPictures(pictureData) {
+    const name = pictureData.picture.name;
+    const description = pictureData.picture.description;
+    const url = pictureData.picture.url;
+
+    return (
+      &lt;tr key={name}
+        &lt;td&gt;&lt;img src={url}&gt;&lt;/td&gt;
+        &lt;td&gt;{description}&lt;/td&gt;
+      &lt;/tr&gt;
+    );
+  }
+
+  render() {
+    return (
+      &lt;table&gt;
+        {this.props.pictures.map(this.renderPictures)}
+      &lt;/table&gt;
+    );
+  }
+}
+
+function mapStateToProps({ pictures }) {  
+  return { pictures };
+}
+
+function mapDispatchToProps(dispatch) {  
+  return bindActionCreators({ fetchPictures }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PictureDisplay);
+</code></pre>
+
+<p>Once again, let's go over what is happening above. Just before this container is rendered, componentWillMount will be executed. This calls our action creator, <code>fetchPictures</code>. For now just assume it is getting us some random pictures that we want to display. Through our action creator, reducers, and store (all to be explained in depth soon), these pictures are now available in our state. If you look near the bottom of this file, you'll see two functions before we export everything. <code>mapStatetoProps</code> is responsible for making the state/store available to our container. In this case, we are making <code>pictures</code> available. <code>mapDispatchToProps</code> is allowing us to easily dispatch our actions from a component or container that doesn't have direct access to our redux store. We will get deeper into the flow of data once we have gone through the action creators and reducers.</p>
+
+<pre><code>actionCreators.js...  
+
+import axios from 'axios';  
+  // axios is a library that will make our API call
+const url = 'www.getrandompictures.com';
+
+export const FETCH_PICTURES = 'FETCH_PICTURES';
+
+export function fetchPictures() {  
+  const request = axios.get(url);
+  return {
+    type: FETCH_PICTURES,
+    payload: request,
+  };
+}
+</code></pre>
+
+<p>When <code>fetchPictures</code> is called in our <code>PictureDisplay</code> container, it makes a GET request to the url above. When that request comes back with the pictures, it goes to our reducer (below).</p>
+
+<pre><code>reducerPictures.js...  
+
+import { FETCH_PICTURES } from '../actions/actionCreators';
+
+export default function(state = [], action) {  
+  switch (action.type) {
+    case FETCH_PICTURES:
+      return [action.payload.data, ...state];
+  }
+  default:
+    return state;
+}
+</code></pre>
+
+<p>Because we passed it the type of <code>FETCH_PICTURES</code> when we created it, it will be added to the current state through the reducer with the case of <code>FETCH_PICTURES</code>. If the action type was anything other than <code>FETCH_PICTURES</code>, we would return the state as-is, through the default case.  </p>
+
+<pre><code>reducers/index.js...  
+
+import { combineReducers } from 'redux';  
+import PictureReducer from './reducerPictures';
+
+const rootReducer = combineReducers({  
+  pictures: PictureReducer,
+});
+
+export default rootReducer;
+</code></pre>
+
+<p>The above is where, if we had more than one reducer, we would combine them to then pass to our redux store. In this simple example, we are 'combining' just the one reducer to pass to the store.</p>
+
+<h6 id="summary">Summary</h6>
+
+<p>Let's run through the data flow. Our <code>PictureDisplay</code> container calls our <code>fetchPictures</code> action creator. <code>fetchPictures</code> creates an action, <code>FETCH_PICTURES</code>, and makes an API call to GET some random pictures. We are able to make this asynchronous request and process the returned pictures with our ReduxPromise middleware. The returned promise with our picture data is added to the state/redux store in <code>reducerPictures.js</code>. Once added to our store, it is automatically received by our <code>PictureDisplay</code> container through the <code>mapStateToProps</code> function. Once it is received by our container, our other functionality will display the pictures and data to the page.</p>
+        </section>
+
+        <footer class="post-footer">
+
+
+
+            <section class="author">
+                <h4><a href="../author/terry/index.html">Terry Capan</a></h4>
+
+                    <p>Read <a href="../author/terry/index.html">more posts</a> by this author.</p>
+                <div class="author-meta">
+                    
+                    
+                </div>
+            </section>
+
+
+            <section class="share">
+                <h4>Share this post</h4>
+                <a class="icon-twitter" href="https://twitter.com/intent/tweet?text=Implementing%20a%20Simple%20Redux%20Store&amp;url=http://localhost:2368/implementing-a-simple-redux-store/"
+                    onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+                    <span class="hidden">Twitter</span>
+                </a>
+                <a class="icon-facebook" href="https://www.facebook.com/sharer/sharer.php?u=http://localhost:2368/implementing-a-simple-redux-store/"
+                    onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+                    <span class="hidden">Facebook</span>
+                </a>
+                <a class="icon-google-plus" href="https://plus.google.com/share?url=http://localhost:2368/implementing-a-simple-redux-store/"
+                   onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+                    <span class="hidden">Google+</span>
+                </a>
+            </section>
+
+        </footer>
+
+    </article>
+</main>
+
+<aside class="read-next">
+    <a class="read-next-story prev no-cover" href="../the-simplest-dynamic-chart-youll-ever-code/index.html">
+        <section class="post">
+            <h2>Simple ES6 Features You Should Already Be Using</h2>
+            <p>Caution: ES6 isn't yet supported by all browsers and will require the use of a compiler, such as babel.&hellip;</p>
+        </section>
+    </a>
+</aside>
+
+
+
+        <footer class="site-footer clearfix">
+            <section class="copyright"><a href="../index.html">Terry Capan</a> &copy; 2016</section>
+            <section class="poweredby">Proudly published with <a href="https://ghost.org">Ghost</a></section>
+        </footer>
+
+    </div>
+
+    
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery.fitvids.js?v=e1bd0d9014"></script>
+    <script type="text/javascript" src="../assets/js/index.js?v=e1bd0d9014"></script>
+
+</body>
+</html>

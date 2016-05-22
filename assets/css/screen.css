@@ -867,7 +867,7 @@ body.nav-opened .nav {
 /* The details of your blog. Defined in ghost/settings/ */
 .page-title {
     margin: 10px 0 10px 0;
-    font-size: 5rem;
+    font-size: 6rem;
     letter-spacing: -1px;
     font-weight: 700;
     font-family: "Open Sans", sans-serif;
@@ -876,7 +876,7 @@ body.nav-opened .nav {
 
 .page-description {
     margin: 0;
-    font-size: 2rem;
+    font-size: 3rem;
     line-height: 1.5em;
     font-family: "Merriweather", serif;
     letter-spacing: 0.01rem;
